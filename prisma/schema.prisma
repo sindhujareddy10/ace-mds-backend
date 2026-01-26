@@ -113,13 +113,16 @@ model TestQuestion {
 }
 
 model DailyStreak {
-  id              Int      @id @default(autoincrement())
-  userId          String
-  date            DateTime
-  questionsSolved Int
+  id     Int      @id @default(autoincrement())
+  userId String
+  date   DateTime
+  count  Int
 
   user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId, date])
 }
+
 
 model Bookmark {
   id         Int      @id @default(autoincrement())
