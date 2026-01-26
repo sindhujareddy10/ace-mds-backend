@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  passwordHash  String
+  academicLevel String?
+  targetExam    String?
+  targetYear    Int?
+  dailyGoal     Int?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  attempts     QuestionAttempt[]
+  testAttempts TestAttempt[]
+  streaks      DailyStreak[]
+  bookmarks    Bookmark[]
+}
+
+model Subject {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+
+  topics Topic[]
+}
+
+
+model Topic {
+  id        Int        @id @default(autoincrement())
+  name      String
+  subjectId Int
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  questions Question[]
+}
+
+model Question {
+  id            Int     @id @default(autoincrement())
+  questionText  String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption String
+  explanation   String
+  referenceBook String
+  isAiGenerated Boolean @default(false)
+
+
+  topicId   Int
+
+  
+  topic   Topic   @relation(fields: [topicId], references: [id])
+
+  attempts  QuestionAttempt[]
+  testLinks TestQuestion[]
+  bookmarks Bookmark[]
+}
+
+model QuestionAttempt {
+  id             Int      @id @default(autoincrement())
+  userId         String
+  questionId     Int
+  selectedOption String
+  isCorrect      Boolean
+  attemptedAt    DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+
+  @@index([userId])
+  @@index([questionId])
+}
+
+model Test {
+  id              Int    @id @default(autoincrement())
+  type            String
+  totalQuestions  Int
+  durationMinutes Int
+
+  attempts  TestAttempt[]
+  questions TestQuestion[]
+}
+
+model TestAttempt {
+  id              Int       @id @default(autoincrement())
+  userId          String
+  testId          Int
+  score           Int
+  violationsCount Int       @default(0)
+  startedAt       DateTime  @default(now())
+  submittedAt     DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  test Test @relation(fields: [testId], references: [id])
+}
+
+model TestQuestion {
+  id         Int @id @default(autoincrement())
+  testId     Int
+  questionId Int
+
+  test     Test     @relation(fields: [testId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+model DailyStreak {
+  id              Int      @id @default(autoincrement())
+  userId          String
+  date            DateTime
+  questionsSolved Int
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Bookmark {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  questionId Int
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  question Question @relation(fields: [questionId], references: [id])
+}
+
+
+
