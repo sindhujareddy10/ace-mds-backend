@@ -3,13 +3,22 @@ const router = express.Router();
 
 const {
   createQuestion,
-  getQuestionsByTopic,
-  checkAnswer
+  getQuestionsByTopic
 } = require("../controllers/question.controller");
 
-// PUBLIC MCQ APIs
-router.post("/", createQuestion);
-router.get("/topic/:topicId", getQuestionsByTopic);
-router.post("/check", checkAnswer);
+const authMiddleware = require("../middleware/auth.middleware");
+
+/**
+ * CREATE QUESTION
+ * POST /api/questions
+ * (Admin / internal use only)
+ */
+router.post("/", authMiddleware, createQuestion);
+
+/**
+ * GET QUESTIONS BY TOPIC
+ * GET /api/questions/topic/:topicId
+ */
+router.get("/topic/:topicId", authMiddleware, getQuestionsByTopic);
 
 module.exports = router;
