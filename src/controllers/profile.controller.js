@@ -1,6 +1,9 @@
 const prisma = require("../prisma");
 
-// GET PROFILE
+/**
+ * GET PROFILE
+ * GET /api/profile
+ */
 const getProfile = async (req, res) => {
   try {
     const user = await prisma.user.findUnique({
@@ -15,23 +18,28 @@ const getProfile = async (req, res) => {
       }
     });
 
-    res.json(user);
-  } catch (error) {
-  console.error("GET PROFILE ERROR:", error);
-  res.status(500).json({
-    message: "Failed to fetch profile",
-    error: error.message
-  });
-}
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
+    return res.json(user);
+  } catch (error) {
+    console.error("GET PROFILE ERROR:", error);
+    return res.status(500).json({
+      message: "Failed to fetch profile"
+    });
+  }
 };
 
-// UPDATE PROFILE
+/**
+ * UPDATE PROFILE
+ * PUT /api/profile
+ */
 const updateProfile = async (req, res) => {
   try {
     const { name, targetYear, academicLevel, dailyGoal } = req.body;
 
-    const user = await prisma.user.update({
+    await prisma.user.update({
       where: { id: req.user.userId },
       data: {
         name,
@@ -41,10 +49,16 @@ const updateProfile = async (req, res) => {
       }
     });
 
-    res.json({ message: "Profile updated successfully" });
+    return res.json({ message: "Profile updated successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to update profile" });
+    console.error("UPDATE PROFILE ERROR:", error);
+    return res.status(500).json({
+      message: "Failed to update profile"
+    });
   }
 };
 
-module.exports = { getProfile, updateProfile };
+module.exports = {
+  getProfile,
+  updateProfile
+};

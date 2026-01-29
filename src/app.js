@@ -8,6 +8,8 @@ const topicRoutes = require("./routes/topic.routes");
 const attemptRoutes = require("./routes/attempt.routes");
 const questionRoutes = require("./routes/question.routes");
 const profileRoutes = require("./routes/profile.routes");
+const leaderboardRoutes = require("./routes/leaderboard.routes");
+const analyticsRoutes = require("./routes/analytics.routes");
 
 const app = express();
 
@@ -21,6 +23,8 @@ app.use("/api/topics", topicRoutes);
 app.use("/api/attempts", attemptRoutes);
 app.use("/api/questions", questionRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 module.exports = app;
 
