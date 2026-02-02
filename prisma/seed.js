@@ -1,24 +1,31 @@
 const { PrismaClient } = require("@prisma/client");
-
 const prisma = new PrismaClient();
 
 async function main() {
+  const subjects = [
+    { name: "Oral Anatomy & Histology" },
+    { name: "Physiology" },
+    { name: "Biochemistry" },
+    { name: "Dental Materials" },
+    { name: "Microbiology" },
+    { name: "Pathology" },
+    { name: "Pharmacology" },
+    { name: "General Medicine" },
+    { name: "General Surgery" },
+    { name: "Oral Pathology" },
+    { name: "Oral Medicine & Radiology" },
+    { name: "Orthodontics" },
+    { name: "Pedodontics" },
+    { name: "Periodontology" },
+    { name: "Prosthodontics" },
+    { name: "Conservative Dentistry & Endodontics" },
+    { name: "Oral & Maxillofacial Surgery" },
+    { name: "Public Health Dentistry" },
+    { name: "Forensic Odontology" }
+  ];
+
   await prisma.subject.createMany({
-    data: [
-      { name: "Dental Anatomy" },
-      { name: "Dental Histology" },
-      { name: "Oral Pathology" },
-      { name: "Oral Medicine" },
-      { name: "Periodontology" },
-      { name: "Orthodontics" },
-      { name: "Prosthodontics" },
-      { name: "Conservative Dentistry" },
-      { name: "Endodontics" },
-      { name: "Oral Surgery" },
-      { name: "Pedodontics" },
-      { name: "Public Health Dentistry" },
-      { name: "Oral Radiology" }
-    ],
+    data: subjects,
     skipDuplicates: true
   });
 
